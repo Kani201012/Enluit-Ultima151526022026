@@ -776,7 +776,7 @@ def gen_inventory_js(is_demo=False):
                 let allImgs = c[3] ? c[3].split('|') : []; let mainImg = allImgs.length > 0 ? allImgs[0] : '{custom_feat}';
                 if(c.length > 1) {{
                     const pName = encodeURIComponent(c[0]);
-                    box.innerHTML += `<div class="card reveal"><img src="${{mainImg}}" class="prod-img" width="300" height="250" loading="lazy" alt="${{c[0]}}"><div class="card-body"><h3>${{c[0]}}</h3><p style="font-weight:bold; color:var(--s); font-size:1.1rem;">${{c[1]}}</p><p class="card-desc">${{c[2]}}</p><div style="margin-top:auto; display:grid; grid-template-columns:1fr 1fr; gap:10px;"><button onclick="addToCart('${{c[0]}}', '${{c[1]}}')" class="btn btn-primary" style="padding:0.5rem; font-size:0.8rem;">Add</button><a href="product.html?item=${{pName}}" class="btn btn-accent" style="padding:0.5rem; font-size:0.8rem;">View ${c[0]} Details</a></div></div></div>`;
+                    box.innerHTML += `<div class="card reveal"><img src="${{mainImg}}" class="prod-img" width="300" height="250" loading="lazy" alt="${{c[0]}}"><div class="card-body"><h3>${{c[0]}}</h3><p style="font-weight:bold; color:var(--s); font-size:1.1rem;">${{c[1]}}</p><p class="card-desc">${{c[2]}}</p><div style="margin-top:auto; display:grid; grid-template-columns:1fr 1fr; gap:10px;"><button onclick="addToCart('${{c[0]}}', '${{c[1]}}')" class="btn btn-primary" style="padding:0.5rem; font-size:0.8rem;">Add</button><a href="product.html?item=${{pName}}" class="btn btn-accent" style="padding:0.5rem; font-size:0.8rem;">View ${{c[0]}} Details</a></div></div></div>`;
                 }}
             }}
         }} catch(e) {{ console.log(e); }}
