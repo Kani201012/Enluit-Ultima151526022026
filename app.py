@@ -952,10 +952,12 @@ def gen_blog_index_html():
 
 def gen_product_page_content(is_demo=False):
     demo_flag = "const isDemo = true;" if is_demo else "const isDemo = false;"
+    ar_script = '<script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>' if enable_ar else ''
     return f"""
-    <section style="padding-top:140px; background: #ffffff; min-height: 100vh;" id="product-section-root">
+    {ar_script}
+    <section style="padding-top:140px; background: #f8fafc; min-height: 100vh;">
         <div class="container">
-            <a href="index.html#inventory" class="back-btn" style="color:var(--p); text-decoration:none; font-weight:700; display:inline-block; margin-bottom:30px;">← BACK TO STORE</a>
+            <a href="index.html#inventory" class="back-btn" style="color:var(--p); text-decoration:none; font-weight:700; display:inline-block; margin-bottom:30px; transition:0.3s;">← BACK TO STORE</a>
             <div id="product-detail-target">Loading Engineering Data...</div>
         </div>
     </section>
@@ -980,9 +982,15 @@ def gen_product_page_content(is_demo=False):
                     allImgs.forEach(img => {{ thumbHtml += `<img src="${{img.trim()}}" class="thumb" onclick="changeImg('${{img.trim()}}')" style="width:60px; height:60px; object-fit:cover; margin-right:10px; cursor:pointer; border-radius:8px; border:1px solid #ddd;">`; }});
                     
                     let mainMedia = `<img src="${{allImgs[0]}}" id="main-img" style="width:100%; border-radius:16px; height:450px; object-fit:cover; box-shadow: 0 10px 30px rgba(0,0,0,0.1);" alt="${{clean[0]}}">`;
-                    
+                    if({str(enable_ar).lower()} && clean.length > 5 && clean[5].includes('.glb')) {{
+                        mainMedia = `<model-viewer src="${{clean[5]}}" ar ar-modes="webxr scene-viewer quick-look" camera-controls tone-mapping="neutral" shadow-intensity="1" auto-rotate style="width:100%; height:450px;"></model-viewer>`;
+                    }}
+
                     let stripe = (clean.length > 4 && clean[4].includes('http') && !clean[4].match(/\\.(jpg|jpeg|png|gif|webp)$/i)) ? clean[4] : '';
                     let btnAction = stripe ? `<a href="${{stripe}}" class="btn btn-accent" style="width:100%; text-decoration:none; display:flex; align-items:center; justify-content:center; height:3.5rem;">BUY NOW</a>` : `<button onclick="addToCart('${{clean[0]}}', '${{clean[1]}}')" class="btn btn-accent" style="width:100%; height:3.5rem;">ADD TO CART</button>`;
+                    
+                    const u = encodeURIComponent(window.location.href); 
+                    const t = encodeURIComponent(clean[0]);
                     
                     document.getElementById('product-detail-target').innerHTML = `
                         <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap:50px; align-items:start;">
@@ -991,17 +999,21 @@ def gen_product_page_content(is_demo=False):
                                 <div style="display:flex; margin-top:15px; overflow-x:auto; padding-bottom:10px;">${{thumbHtml}}</div>
                             </div>
                             <div>
-                                <h1 style="font-size:3rem; line-height:1; margin-bottom:10px; color:var(--primary); font-family:sans-serif;">${{clean[0]}}</h1>
+                                <h1 style="font-size:3rem; line-height:1.1; margin-bottom:10px; color:var(--p); font-family:var(--h-font);">${{clean[0]}}</h1>
                                 <div style="font-size:2rem; color:#059669; font-weight:800; margin-bottom:20px;">${{clean[1]}}</div>
-                                <div style="line-height:1.6; color:#475569; font-size:1.05rem;">
+                                <div style="line-height:1.6; color:var(--txt); font-size:1.05rem;">
                                     ${{parseMarkdown(clean[2])}}
                                 </div>
                                 <div style="margin-top:30px;">${{btnAction}}</div>
-                                <div style="margin-top:40px; padding-top:20px; border-top:1px solid #eee;">
+                                
+                                <div style="margin-top:40px; padding-top:20px; border-top:1px solid rgba(128,128,128,0.2);">
                                     <p style="font-size:0.8rem; font-weight:700; text-transform:uppercase; color:#94a3b8; margin-bottom:15px;">Share Project Specifications:</p>
-                                    <div style="display:flex; gap:10px;">
-                                        <a href="https://wa.me/?text=${{encodeURIComponent(window.location.href)}}" target="_blank" style="background:#25D366; width:40px; height:40px; display:flex; align-items:center; justify-content:center; border-radius:50%; color:white; text-decoration:none;">WA</a>
-                                        <a href="https://www.facebook.com/sharer/sharer.php?u=${{encodeURIComponent(window.location.href)}}" target="_blank" style="background:#1877F2; width:40px; height:40px; display:flex; align-items:center; justify-content:center; border-radius:50%; color:white; text-decoration:none;">FB</a>
+                                    <div class="share-row" style="display:flex; gap:12px;">
+                                        <a href="https://wa.me/?text=${{t}}%20${{u}}" target="_blank" class="share-btn bg-wa" style="width:40px; height:40px; display:flex; align-items:center; justify-content:center; border-radius:50%; background:#25D366;"><svg viewBox="0 0 24 24" fill="white" width="20"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91c0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21c5.46 0 9.91-4.45 9.91-9.91c0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2m.01 1.67c2.2 0 4.26.86 5.82 2.42a8.225 8.225 0 0 1 2.41 5.83c0 4.54-3.7 8.23-8.24 8.23c-1.48 0-2.93-.39-4.19-1.15l-.3-.17l-3.12.82l.83-3.04l-.2-.32a8.188 8.188 0 0 1-1.26-4.38c.01-4.54 3.7-8.24 8.25-8.24m-3.53 3.16c-.13 0-.35.05-.54.26c-.19.2-.72.7-.72 1.72s.73 2.01.83 2.14c.1.13 1.44 2.19 3.48 3.07c.49.21.87.33 1.16.43c.49.16.94.13 1.29.08c.4-.06 1.21-.5 1.38-.98c.17-.48.17-.89.12-.98c-.05-.09-.18-.13-.37-.23c-.19-.1-.1.13-.1.13s-1.13-.56-1.32-.66c-.19-.1-.32-.15-.45.05c-.13.2-.51.65-.62.78c-.11.13-.23.15-.42.05c-.19-.1-.8-.3-1.53-.94c-.57-.5-1.02-1.12-1.21-1.45c-.11-.19-.01-.29.09-.38c.09-.08.19-.23.29-.34c.1-.11.13-.19.19-.32c.06-.13.03-.24-.01-.34c-.05-.1-.45-1.08-.62-1.48c-.16-.4-.36-.34-.51-.35c-.11-.01-.25-.01-.4-.01Z"/></svg></a>
+                                        <a href="https://www.facebook.com/sharer/sharer.php?u=${{u}}" target="_blank" class="share-btn bg-fb" style="width:40px; height:40px; display:flex; align-items:center; justify-content:center; border-radius:50%; background:#1877F2;"><svg viewBox="0 0 24 24" fill="white" width="20"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg></a>
+                                        <a href="https://twitter.com/intent/tweet?url=${{u}}&text=${{t}}" target="_blank" class="share-btn bg-x" style="width:40px; height:40px; display:flex; align-items:center; justify-content:center; border-radius:50%; background:#000000;"><svg viewBox="0 0 24 24" fill="white" width="18"><path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584l-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z"></path></svg></a>
+                                        <a href="https://www.linkedin.com/shareArticle?mini=true&url=${{u}}&title=${{t}}" target="_blank" class="share-btn bg-li" style="width:40px; height:40px; display:flex; align-items:center; justify-content:center; border-radius:50%; background:#0A66C2;"><svg viewBox="0 0 24 24" fill="white" width="18"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2a2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6zM2 9h4v12H2zM4 2a2 2 0 1 1-2 2a2 2 0 0 1 2-2z"></path></svg></a>
+                                        <button onclick="navigator.clipboard.writeText(window.location.href); alert('Link Copied!')" class="share-btn bg-link" style="width:40px; height:40px; display:flex; align-items:center; justify-content:center; border-radius:50%; background:#64748b; border:none; cursor:pointer;"><svg viewBox="0 0 24 24" fill="white" width="18"><path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z"/></svg></button>
                                     </div>
                                 </div>
                             </div>
@@ -1010,7 +1022,7 @@ def gen_product_page_content(is_demo=False):
                     break;
                 }}
             }}
-        }} catch(e) {{ console.error(e); }}
+        }} catch(e) {{ console.error("Product Load Error:", e); }}
     }}
     window.addEventListener('load', loadProduct);
     </script>
