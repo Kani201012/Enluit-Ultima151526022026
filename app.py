@@ -12,7 +12,7 @@ def init_state(key, default_val):
         st.session_state[key] = default_val
 
 init_state('hero_h', "Stop Paying Rent for Your Website.")
-init_state('hero_sub', "The Titan Engine is the world’s first 0.1s website architecture that runs on $0 monthly fees. Pay once. Own it forever.")
+init_state('hero_sub', "The Titan Engine is the world’s first 0.1s website architecture that runs on $0 monthly fees. Pay once. Own it forever.")def gen_csv_parser():
 init_state('about_h', "Control Your Empire from a Spreadsheet")
 init_state('about_short', "No WordPress dashboard. No plugins to update. Just open your private Google Sheet, change a text, and watch your site update globally in seconds.")
 init_state('feat_data', "bolt | The Performance Pillar | **0.1s High-Velocity Loading**. While traditional sites take 3–5s, Titan loads instantly.\nwallet | The Economic Pillar | **$0 Monthly Fees**. We eliminated hosting subscriptions.\ntable | The Functional Pillar | **Google Sheets CMS**. Update prices and photos directly from a simple spreadsheet.\nshield | The Authority Pillar | **Unhackable Security**. Zero-DB Architecture removes the hacker's primary entry point.\nlayers | The Reliability Pillar | **Global Edge Deployment**. Distributed across 100+ servers worldwide.\nstar | The Conversion Pillar | **One-Tap WhatsApp**. Direct-to-Chat technology.")
@@ -643,11 +643,23 @@ def gen_csv_parser():
     
     function parseMarkdown(text) { 
         if (!text) return '';
-        return text
-            .replace(/\\r\\n/g, '<br>') // Converts Excel line breaks
-            .replace(/\\n/g, '<br>')    // Converts standard line breaks
-            .replace(/\\*\\*(.*?)\\*\\*/g, '<strong>$1</strong>') // Bold: **text**
-            .replace(/^\\* (.*$)/gim, '<li style="margin-left:20px; list-style-type: disc; margin-bottom:5px;">$1</li>'); // Bullets: * text
+        // 1. Handle Bold (Logic-based split/join to avoid Python escape errors)
+        let parts = text.split('**');
+        for (let i = 1; i < parts.length; i += 2) {
+            parts[i] = '<strong>' + parts[i] + '</strong>';
+        }
+        let html = parts.join('');
+        
+        // 2. Handle Line Breaks and Bullets
+        return html
+            .replace(/\\n/g, '<br>') 
+            .replace(/\\r/g, '')
+            .split('<br>').map(line => {
+                if (line.trim().startsWith('* ')) {
+                    return `<li style="margin-left:20px; list-style-type:disc; margin-bottom:5px;">${line.trim().substring(2)}</li>`;
+                }
+                return line;
+            }).join('<br>');
     }
     </script>
     """
