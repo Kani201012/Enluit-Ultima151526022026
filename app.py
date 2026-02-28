@@ -987,7 +987,9 @@ def gen_product_page_content(is_demo=False):
                     }}
 
                     let stripe = (clean.length > 4 && clean[4].includes('http') && !clean[4].match(/\\.(jpg|jpeg|png|gif|webp)$/i)) ? clean[4] : '';
-                    let btnAction = stripe ? `<a href="${{stripe}}" class="btn btn-accent" style="width:100%; text-decoration:none; display:flex; align-items:center; justify-content:center; height:3.5rem;">BUY NOW</a>` : `<button onclick="addToCart('${{clean[0]}}', '${{clean[1]}}')" class="btn btn-accent" style="width:100%; height:3.5rem;">ADD TO CART</button>`;
+                   let btnAction = stripe ? 
+    `<a href="${{stripe}}" class="btn btn-accent" style="width: fit-content; min-width: 280px; padding: 0 50px; text-decoration:none; display: inline-flex; align-items:center; justify-content:center; height:3.5rem;">BUY NOW</a>` : 
+    `<button onclick="addToCart('${{clean[0]}}', '${{clean[1]}}')" class="btn btn-accent" style="width: fit-content; min-width: 280px; padding: 0 50px; height:3.5rem;">ADD TO CART</button>`;
                     
                     const u = encodeURIComponent(window.location.href); 
                     const t = encodeURIComponent(clean[0]);
