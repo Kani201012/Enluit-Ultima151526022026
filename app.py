@@ -419,7 +419,29 @@ def get_theme_css():
     main section {{ padding: clamp(2rem, 4vw, 4rem) 0; }}
     .section-head {{ text-align: center; margin-bottom: clamp(1rem, 3vw, 2.5rem); }}
     .grid-3 {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; }}
-    .about-grid, .detail-view {{ display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; }}
+    
+    /* About stays simple */
+    .about-grid {{ display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; }}
+    
+    /* Detail View gets the Premium Overhaul */
+    .detail-view {{ 
+        display: grid; 
+        grid-template-columns: 1.2fr 1fr; 
+        gap: 4rem; 
+        align-items: start; 
+        background: var(--card); 
+        padding: 3rem; 
+        border-radius: 24px; 
+        box-shadow: 0 20px 50px rgba(0,0,0,0.05); 
+        border: 1px solid rgba(100,100,100,0.1); 
+    }}
+    
+    .product-price-tag {{ font-size: 2.5rem; color: #059669; font-weight: 800; margin-bottom: 1.5rem; display: block; }}
+    .product-meta-box {{ background: rgba(100,100,100,0.05); padding: 1.5rem; border-radius: 12px; margin-bottom: 2rem; border-left: 4px solid var(--s); }}
+    .product-meta-box p {{ margin-bottom: 0.5rem; font-size: 0.95rem; line-height: 1.4; }}
+    .back-btn {{ display: inline-flex; align-items: center; gap: 8px; text-decoration: none; color: var(--txt); font-weight: 600; margin-bottom: 2rem; transition: 0.3s; }}
+    .back-btn:hover {{ color: var(--s); transform: translateX(-5px); }}
+
     .contact-grid {{ display: grid; grid-template-columns: 1fr 2fr; gap: 3rem; }}
     
     .card {{ background: var(--card); border-radius: var(--radius); border: 1px solid rgba(100,100,100,0.1); transition: 0.3s; display: flex; flex-direction: column; overflow: hidden; }}
